@@ -116,16 +116,6 @@ namespace DifferentialCollections
 
         protected void Requery(TaskCompletionSource<bool> tcs, TCriteria criteria)
         {
-            //if (_collectionView.RowHeight < 0)
-                //throw new ArgumentException("Table must have a fixed row height.");
-
-
-            //if (_loadingCells.Count > 0)
-            //{
-            //    System.Diagnostics.Debug.WriteLine("canceling load");
-            //    _tcs.TrySetResult(true);
-            //    return;
-            //}
             var contentOffset = _collectionView.ContentOffset;
             var rowCountBefore = DataModel.Count;
             var dataModelSnapshot = DataModel.FromCriteria(criteria);
@@ -142,8 +132,6 @@ namespace DifferentialCollections
             var maxRowCount = (int)Math.Ceiling(_collectionView.Bounds.Height / rowHeight);
 
             var newTopRow = (int)Math.Floor(_collectionView.ContentOffset.Y / rowHeight);
-            //var newTopRow = _collectionView.IndexPathsForVisibleItems.Select(x => x.Row).FirstOrDefault();
-
 
             var newBottomRow = newTopRow + maxRowCount - 1;
 
@@ -152,13 +140,8 @@ namespace DifferentialCollections
             var newRows = dataModelSnapshot.GetRowPositions(rowIdsInViewport.Union(previousRows.RowIds).Union(selectedIds)).ToList();
 
             var invalidResults = newRows.GroupBy(x => x.Position).Where(x => x.Count() > 1).Select(x => new { Position = x, Count = x.Count() });
-            foreach (var item in invalidResults)
-            {
-                System.Diagnostics.Debug.WriteLine($"RowPosition results are incorrect: Row position {item.Position} appears {item.Count} times.");
-            }
 
             List<int> rowsToRefresh = new List<int>();
-
 
             var q = previousRows.FullOuterJoin(newRows, a => a.Key, b => b.Key, (a, b, id) => new { Before = a, After = b });
 
@@ -240,10 +223,7 @@ namespace DifferentialCollections
 
         public override UICollectionViewCell GetCell(UICollectionView collectionView, NSIndexPath indexPath)
         {
-            var cell = (UICollectionViewCell)collectionView.DequeueReusableCell(_cellIdentifier, indexPath);
-            //var cell = new UITableViewCell();
-
-            return cell;
+            return (UICollectionViewCell)collectionView.DequeueReusableCell(_cellIdentifier, indexPath);
         }
 
         public override void WillDisplayCell(UICollectionView collectionView, UICollectionViewCell cell, NSIndexPath indexPath)
@@ -267,27 +247,22 @@ namespace DifferentialCollections
                 // cache has been invalidated
                 return;
             }
-            try
+
+            // if the is not 'loading', and it has not become visible... then it must have passed out of visibility
+            if (!_loadingCells.Contains(rowIndex))
+                return;
+
+            _loadingCells.Remove(rowIndex);
+
+            var rowMeta = _idGetter(entity);
+            rowMeta.Position = rowIndex;
+            _visibleRows.Set(rowMeta);
+
+            DispatchQueue.MainQueue.DispatchAsync(() =>
             {
-                // if the is not 'loading', and it has not become visible... then it must have passed out of visibility
-                if (!_loadingCells.Contains(rowIndex))
-                    return;
-
-                _loadingCells.Remove(rowIndex);
-
-                var rowMeta = _idGetter(entity);
-                rowMeta.Position = rowIndex;
-                _visibleRows.Set(rowMeta);
-
-                DispatchQueue.MainQueue.DispatchAsync(() =>
-                {
                     //cell.TextLabel.Text = null;
                     OnDataContextLoaded(_visibleRows, cell, rowIndex, entity);
-                });
-            }
-            catch (Exception ex)
-            {
-            }
+            });
         }
 
         protected abstract void OnDataContextLoaded(VisibleRowManager<TKey> visibleRows, UICollectionViewCell rowView, int rowIndex, TEntity entity);
