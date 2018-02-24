@@ -40,16 +40,6 @@ namespace DifferentialCollections
 
             _refresh = new UIRefreshControl();
 
-            collectionView.Scrolled += (sender, e) =>
-            {
-                System.Diagnostics.Debug.WriteLine("Asdasdad");
-            };
-
-            collectionView.DraggingStarted += (sender, e) =>
-            {
-                System.Diagnostics.Debug.WriteLine("Asdasdad");
-            };
-
             _cryptoCoinDataSource = new CryptoCoinDataSource(activityView);
             _cryptoCoinSource = new CryptoCoinCollectionViewSource(collectionView, null, CryptoCoinCell.Key);
             _cryptoCoinSource.DataModel = _cryptoCoinDataSource;
