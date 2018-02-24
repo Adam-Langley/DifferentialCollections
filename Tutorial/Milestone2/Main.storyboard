@@ -32,8 +32,8 @@
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="635">
                                 <rect key="frame" x="82.5" y="27" width="249" height="29"/>
                                 <segments>
-                                    <segment title="Name"/>
-                                    <segment title="24 Hour Change"/>
+                                    <segment title="Name ^"/>
+                                    <segment title="24 Hour Change ^"/>
                                 </segments>
                                 <connections>
                                     <action selector="sort_change:" destination="637" eventType="valueChanged" id="636"/>

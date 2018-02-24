@@ -104,6 +104,7 @@ namespace DifferentialCollections
                     break;
                 }
             }
+
             if (newSegment == segmentSort.SelectedSegment)
             {
                 var newDescending = !_cryptoCoinDataSource.Criteria.Descending;
@@ -117,7 +118,19 @@ namespace DifferentialCollections
                 var lastSpace = segText.LastIndexOf(' ');
                 if (lastSpace == -1)
                     lastSpace = segText.Length;
-                segmentSort.SetTitle(segText.Substring(0, lastSpace) + (newDescending ? " v" : " ^"), newSegment);
+                BeginInvokeOnMainThread(() =>
+                {
+                    segmentSort.SetTitle(segText.Substring(0, lastSpace) + (newDescending ? " v" : " ^"), newSegment);
+                });
+            } else {
+                var segText = segmentSort.TitleAt(newSegment);
+                var lastSpace = segText.LastIndexOf(' ');
+                if (lastSpace == -1)
+                    lastSpace = segText.Length;
+                BeginInvokeOnMainThread(() =>
+                {
+                    segmentSort.SetTitle(segText.Substring(0, lastSpace) + (_cryptoCoinDataSource.Criteria.Descending ? " v" : " ^"), newSegment);                
+                });
             }
         }
 
