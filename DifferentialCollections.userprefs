@@ -1,12 +1,9 @@
 ﻿<Properties StartupConfiguration="{0F1C850F-C60B-4CEE-8C83-EF9AAB88BF75}|Default" GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workbench ActiveDocument="DifferentialCollections.git Status">
     <Files>
-      <File FileName="DifferentialCollections/DifferentialCollections.iOS/DifferentialCollections.iOS.csproj" Line="1" Column="1" />
-      <File FileName="Tutorial/Milestone2/ViewController.cs" Line="41" Column="47" />
-      <File FileName="Tutorial/Milestone2/CryptoCoinCollectionViewSource.cs" Line="12" Column="44" />
-      <File FileName="Tutorial/Milestone1/ViewController.cs" Line="6" Column="7" />
-      <File FileName="Tutorial/Milestone2/CryptoCoinDataSource.cs" Line="1" Column="1" />
-      <File FileName="Tutorial/Milestone2/Main.storyboard" />
+      <File FileName="Tutorial/Milestone2/ViewController.cs" Line="85" Column="30" />
+      <File FileName="Tutorial/Milestone2/CryptoCoinCollectionViewSource.cs" Line="23" Column="46" />
+      <File FileName="Tutorial/Milestone2/DifferentialCollections/DifferentialCollectionViewSource.cs" Line="34" Column="13" />
       <File FileName="DifferentialCollections.git Status" />
     </Files>
   </MonoDevelop.Ide.Workbench>
