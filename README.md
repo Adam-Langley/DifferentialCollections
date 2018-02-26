@@ -1,6 +1,8 @@
 # DifferentialCollections
 A Xamarin iOS library for keeping an UICollectionView in sync with a dynamic SQL data model.
 
+>Install-Package Dabble.DifferentialCollections -Version 0.0.1
+
 With a single line of code, initiate the synchronization between a UICollectionView and a highly dynamic data source of 
 thousands of records, avoiding any complex, application-specific messaging - while supporting request pagination, 
 animations, and persistent cell-selection.
