@@ -2,8 +2,16 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="DifferentialCollections.git Status">
     <Files>
       <File FileName="Tutorial/Milestone2/ViewController.cs" Line="85" Column="30" />
-      <File FileName="Tutorial/Milestone2/CryptoCoinCollectionViewSource.cs" Line="23" Column="46" />
-      <File FileName="Tutorial/Milestone2/DifferentialCollections/DifferentialCollectionViewSource.cs" Line="34" Column="13" />
+      <File FileName="Tutorial/Milestone2/CryptoCoinCollectionViewSource.cs" Line="1" Column="1" />
+      <File FileName="Tutorial/Milestone2/DifferentialCollections/DifferentialCollectionViewSource.cs" Line="225" Column="1" />
+      <File FileName="DifferentialCollections/DifferentialCollections.iOS/DifferentialCollectionViewSource.cs" Line="180" Column="45" />
+      <File FileName="Tutorial/Milestone2/DifferentialCollections/ViewInstructions.cs" Line="6" Column="23" />
+      <File FileName="Tutorial/Milestone1/CryptoCoinTableViewSource.cs" Line="12" Column="28" />
+      <File FileName="Tutorial/Milestone1/ViewController.cs" Line="13" Column="11" />
+      <File FileName="DifferentialCollections/DifferentialCollections.Core/VisibleRowManagerTransaction.cs" Line="192" Column="81" />
+      <File FileName="DifferentialCollections/DifferentialCollections.Core/ViewInstructions.cs" Line="6" Column="22" />
+      <File FileName="Tutorial/Milestone2/DifferentialCollections/VisibleRowManagerTransaction.cs" Line="192" Column="81" />
+      <File FileName="Tutorial/Milestone1/ViewController.designer.cs" Line="33" Column="17" />
       <File FileName="DifferentialCollections.git Status" />
     </Files>
   </MonoDevelop.Ide.Workbench>

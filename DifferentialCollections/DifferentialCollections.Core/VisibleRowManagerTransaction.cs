@@ -58,9 +58,9 @@ namespace DifferentialCollections
                 _held.Add(position);
             }
 
-            public TableInstructions Commit(int topRow, int bottomRow)
+            public ViewInstructions Commit(int topRow, int bottomRow)
             {
-                var tableInstructions = new TableInstructions();
+                var viewInstructions = new ViewInstructions();
                 var newCache = new RowVersionDictionary();
                 var rowCountDifference = _rowCountAfter - _rowCountBefore;
                 var topDeficit = 0;
@@ -87,7 +87,7 @@ namespace DifferentialCollections
                         throw new ArgumentException("Cannot move to nonexistent row.");
                     }
 
-                    tableInstructions.Move(item.Key, item.Value);
+                    viewInstructions.Move(item.Key, item.Value);
 
                     if (item.Key >= topRow && item.Value < topRow)
                         topDeficit++; // too many above top position
@@ -103,7 +103,7 @@ namespace DifferentialCollections
                     }
                 }
 
-                tableInstructions.Delete(_removed, true);
+                viewInstructions.Delete(_removed, true);
 
                 var rowChangeByInstructions = _appeared.Count - _removed.Count;
 
@@ -114,17 +114,17 @@ namespace DifferentialCollections
                 int deletionPoint = _rowCountBefore - 1;
                 foreach (var item in _appeared)
                 {
-                    if (tableInstructions.NetChange < rowCountDifference)
+                    if (viewInstructions.NetChange < rowCountDifference)
                     {
                         // otherwise we need to add a new row.
-                        tableInstructions.Insert(item.Key, true);
+                        viewInstructions.Insert(item.Key, true);
                     }
                     else
                     {
                         if (topDeficit > 0)
                         {
                             deletionPoint = 0;
-                            while (_appeared.ContainsKey(deletionPoint) || !tableInstructions.CanDeleteFrom(deletionPoint))
+                            while (_appeared.ContainsKey(deletionPoint) || !viewInstructions.CanDeleteFrom(deletionPoint))
                                 deletionPoint++;
 
                             if (deletionPoint >= topRow)
@@ -142,15 +142,15 @@ namespace DifferentialCollections
 
                             // this is not a true move, we have picked a cell essentially at random, so use a del/add pair to avoid it
                             // animating across the screen.
-                            //tableInstructions.Move(deletionPoint, item.Key);
-                            tableInstructions.Delete(deletionPoint, false);
-                            tableInstructions.Insert(item.Key, false);
+                            //viewInstructions.Move(deletionPoint, item.Key);
+                            viewInstructions.Delete(deletionPoint, false);
+                            viewInstructions.Insert(item.Key, false);
                         }
                         else
                         {
                             deletionPoint = _rowCountBefore - 1;
 
-                            while (_appeared.ContainsKey(deletionPoint) || !tableInstructions.CanDeleteFrom(deletionPoint))
+                            while (_appeared.ContainsKey(deletionPoint) || !viewInstructions.CanDeleteFrom(deletionPoint))
                                 deletionPoint--;
 
                             if (item.Key >= _rowCountAfter)
@@ -160,9 +160,9 @@ namespace DifferentialCollections
 
                             // this is not a true move, we have picked a cell essentially at random, so use a del/add pair to avoid it
                             // animating across the screen.
-                            //tableInstructions.Move(deletionPoint, item.Key);
-                            tableInstructions.Delete(deletionPoint, false);
-                            tableInstructions.Insert(item.Key, false);
+                            //viewInstructions.Move(deletionPoint, item.Key);
+                            viewInstructions.Delete(deletionPoint, false);
+                            viewInstructions.Insert(item.Key, false);
 
                             deletionPoint--;
                         }
@@ -171,33 +171,33 @@ namespace DifferentialCollections
                     newCache[item.Key] = item.Value;
                 }
 
-                if (tableInstructions.NetChange < rowCountDifference)
+                if (viewInstructions.NetChange < rowCountDifference)
                 {
-                    // we need to compensate by adding some rows to our UITable
+                    // we need to compensate by adding some rows to our view
                     // always add to the end.
                     int insertionPoint = _rowCountAfter - 1;
-                    var numberToAdd = rowCountDifference - tableInstructions.NetChange;
+                    var numberToAdd = rowCountDifference - viewInstructions.NetChange;
                     for (int i = 0; i < numberToAdd; i++)
                     {
-                        while (newCache.ContainsKey(insertionPoint) || !tableInstructions.CanInsertAt(insertionPoint))
+                        while (newCache.ContainsKey(insertionPoint) || !viewInstructions.CanInsertAt(insertionPoint))
                             insertionPoint--;
 
-                        tableInstructions.Insert(insertionPoint, false);
+                        viewInstructions.Insert(insertionPoint, false);
 
                         insertionPoint--;
                     }
                 }
-                else if (tableInstructions.NetChange > rowCountDifference)
+                else if (viewInstructions.NetChange > rowCountDifference)
                 {
-                    // we need to compensate by removing some rows from our UITable
+                    // we need to compensate by removing some rows from our view
                     deletionPoint = _rowCountBefore - 1;
-                    var numberToRemove = tableInstructions.NetChange - rowCountDifference;
+                    var numberToRemove = viewInstructions.NetChange - rowCountDifference;
                     for (int i = 0; i < numberToRemove; i++)
                     {
-                        while (newCache.ContainsKey(deletionPoint) || !tableInstructions.CanDeleteFrom(deletionPoint))
+                        while (newCache.ContainsKey(deletionPoint) || !viewInstructions.CanDeleteFrom(deletionPoint))
                             deletionPoint--;
 
-                        tableInstructions.Delete(deletionPoint, false);
+                        viewInstructions.Delete(deletionPoint, false);
 
                         deletionPoint--;
                     }
@@ -212,7 +212,7 @@ namespace DifferentialCollections
                 while(toRemove.Count > 0 && (rowToRemove = toRemove.Pop()) > 0)
                     newCache.Remove(rowToRemove);
                 _owner._cache = newCache;
-                return tableInstructions;
+                return viewInstructions;
             }
         }
     }

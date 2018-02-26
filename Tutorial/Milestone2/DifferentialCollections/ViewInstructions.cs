@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DifferentialCollections
 {
-    public class TableInstructions
+    public class ViewInstructions
     {
         readonly HashSet<int> _insertedVisible = new HashSet<int>();
         readonly HashSet<int> _insertedInvisible = new HashSet<int>();

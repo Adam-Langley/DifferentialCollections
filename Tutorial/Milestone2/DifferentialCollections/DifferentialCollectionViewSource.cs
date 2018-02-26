@@ -56,7 +56,7 @@ namespace DifferentialCollections
                     _idGetter = _dataModel.IdentifierExpression.Compile();
 
                     if (wasNull)
-                        QueueAction(x => TableViewReloadData(x));
+                        QueueAction(x => CollectionViewReloadData(x));
                     else
                         DataModel.RequeryWithCriteria(x => { });
 
@@ -98,7 +98,7 @@ namespace DifferentialCollections
             }
         }
 
-        protected void TableViewReloadData(TaskCompletionSource<bool> tcs)
+        protected void CollectionViewReloadData(TaskCompletionSource<bool> tcs)
         {
             CATransaction.Begin();
             CATransaction.CompletionBlock = () => tcs.TrySetResult(true);
@@ -108,16 +108,6 @@ namespace DifferentialCollections
 
         protected void Requery(TaskCompletionSource<bool> tcs, TCriteria criteria)
         {
-            //if (_collectionView.RowHeight < 0)
-                //throw new ArgumentException("Table must have a fixed row height.");
-
-
-            //if (_loadingCells.Count > 0)
-            //{
-            //    System.Diagnostics.Debug.WriteLine("canceling load");
-            //    _tcs.TrySetResult(true);
-            //    return;
-            //}
             var contentOffset = _collectionView.ContentOffset;
             var rowCountBefore = DataModel.Count;
             var dataModelSnapshot = DataModel.FromCriteria(criteria);
@@ -183,18 +173,18 @@ namespace DifferentialCollections
             // calculate new legal position
             var top = Math.Min(contentOffset.Y, Math.Max(0, rowCountAfter * rowHeight - _collectionView.Bounds.Height));
 
-            var tableInstructions = snapshot.Commit(newTopRow, newBottomRow);
+            var viewInstructions = snapshot.Commit(newTopRow, newBottomRow);
 
-            if (tableInstructions.HasChanges)
+            if (viewInstructions.HasChanges)
             {
                 _collectionView.PerformBatchUpdates(() =>
                 {
-                    foreach (var row in tableInstructions.Moved)
+                    foreach (var row in viewInstructions.Moved)
                         _collectionView.MoveItem(NSIndexPath.FromRowSection(row.Key, 0), NSIndexPath.FromRowSection(row.Value, 0));
 
-                    _collectionView.InsertItems(tableInstructions.InsertedVisible.Union(tableInstructions.InsertedInvisible).Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
+                    _collectionView.InsertItems(viewInstructions.InsertedVisible.Union(viewInstructions.InsertedInvisible).Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
 
-                    _collectionView.DeleteItems(tableInstructions.DeletedVisible.Union(tableInstructions.DeletedInvisible).Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
+                    _collectionView.DeleteItems(viewInstructions.DeletedVisible.Union(viewInstructions.DeletedInvisible).Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
 
                     // the new source has the new filter
                     dataModelSnapshot.Commit();
@@ -232,8 +222,6 @@ namespace DifferentialCollections
         public override UICollectionViewCell GetCell(UICollectionView collectionView, NSIndexPath indexPath)
         {
             var cell = (UICollectionViewCell)collectionView.DequeueReusableCell(_cellIdentifier, indexPath);
-            //var cell = new UITableViewCell();
-
             return cell;
         }
 
@@ -283,9 +271,9 @@ namespace DifferentialCollections
 
         protected abstract void OnDataContextLoaded(VisibleRowManager<TKey> visibleRows, UICollectionViewCell rowView, int rowIndex, TEntity entity);
 
-        public override void CellDisplayingEnded(UICollectionView tableView, UICollectionViewCell cell, NSIndexPath indexPath)
+        public override void CellDisplayingEnded(UICollectionView collectionView, UICollectionViewCell cell, NSIndexPath indexPath)
         {
-            if (!tableView.IndexPathsForVisibleItems.Contains(indexPath)) // sometimes CellDisplayingEnded fires when row was not actually removed... not sure why.
+            if (!collectionView.IndexPathsForVisibleItems.Contains(indexPath)) // sometimes CellDisplayingEnded fires when row was not actually removed... not sure why.
                 _loadingCells.Remove(indexPath.Row);
         }
 

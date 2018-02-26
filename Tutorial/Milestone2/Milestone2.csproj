@@ -134,7 +134,7 @@
     <Compile Include="DifferentialCollections\DifferentialDataModel.cs" />
     <Compile Include="DifferentialCollections\QueryableExtensions.cs" />
     <Compile Include="DifferentialCollections\RowVersionDictionary.cs" />
-    <Compile Include="DifferentialCollections\TableInstructions.cs" />
+    <Compile Include="DifferentialCollections\ViewInstructions.cs" />
     <Compile Include="DifferentialCollections\VisibleRowManager.cs" />
     <Compile Include="DifferentialCollections\VisibleRowManagerTransaction.cs" />
   </ItemGroup>

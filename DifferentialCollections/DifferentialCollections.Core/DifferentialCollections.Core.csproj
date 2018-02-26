@@ -34,7 +34,7 @@
     <Compile Include="DifferentialDataModel.cs" />
     <Compile Include="QueryableExtensions.cs" />
     <Compile Include="RowVersionDictionary.cs" />
-    <Compile Include="TableInstructions.cs" />
+    <Compile Include="ViewInstructions.cs" />
     <Compile Include="VisibleRowManager.cs" />
     <Compile Include="VisibleRowManagerTransaction.cs" />
   </ItemGroup>
