@@ -108,6 +108,7 @@ namespace DifferentialCollections
 
         protected void Requery(TaskCompletionSource<bool> tcs, TCriteria criteria)
         {
+            System.Diagnostics.Debug.WriteLine("blablablabla " + System.Threading.Thread.CurrentThread.ManagedThreadId);
             var contentOffset = _collectionView.ContentOffset;
             var rowCountBefore = DataModel.Count;
             var dataModelSnapshot = DataModel.FromCriteria(criteria);
@@ -177,14 +178,16 @@ namespace DifferentialCollections
 
             if (viewInstructions.HasChanges)
             {
-                _collectionView.PerformBatchUpdates(() =>
+                try
                 {
-                    foreach (var row in viewInstructions.Moved)
-                        _collectionView.MoveItem(NSIndexPath.FromRowSection(row.Key, 0), NSIndexPath.FromRowSection(row.Value, 0));
+                    _collectionView.PerformBatchUpdates(() =>
+                    {
+                        foreach (var row in viewInstructions.Moved)
+                            _collectionView.MoveItem(NSIndexPath.FromRowSection(row.Key, 0), NSIndexPath.FromRowSection(row.Value, 0));
 
-                    _collectionView.InsertItems(viewInstructions.InsertedVisible.Union(viewInstructions.InsertedInvisible).Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
+                        _collectionView.InsertItems(viewInstructions.InsertedVisible.Union(viewInstructions.InsertedInvisible).Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
 
-                    _collectionView.DeleteItems(viewInstructions.DeletedVisible.Union(viewInstructions.DeletedInvisible).Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
+                        _collectionView.DeleteItems(viewInstructions.DeletedVisible.Union(viewInstructions.DeletedInvisible).Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
 
                     // the new source has the new filter
                     dataModelSnapshot.Commit();
@@ -193,12 +196,20 @@ namespace DifferentialCollections
                     // blow away the item cache
                     _cache = new BatchingCache<TEntity>(CACHE_SIZE);
 
-                    tcs.TrySetResult(true);
-                }, (finished) =>
-                {
-                    // reloads must happen after the collection has been rearranged, to avoid cell multiple-animation conflicts.
-                    _collectionView.ReloadItems(rowsToRefresh.Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
-                });
+                        tcs.TrySetResult(true);
+                    }, (finished) =>
+                    {
+                        try
+                        {
+                            // reloads must happen after the collection has been rearranged, to avoid cell multiple-animation conflicts.
+                            _collectionView.ReloadItems(rowsToRefresh.Select(x => NSIndexPath.FromRowSection(x, 0)).ToArray());
+                        } catch(Exception ex2){
+                            
+                        }
+                    });
+                } catch (Exception ex){
+                    
+                }
             }
             else
             {

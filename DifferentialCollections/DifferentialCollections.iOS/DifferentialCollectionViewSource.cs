@@ -37,11 +37,18 @@ namespace DifferentialCollections
         Func<TEntity, DifferentialDataModel<TKey>.RowVersion> _idGetter;
         DifferentialDataModel<TKey, TEntity, TCriteria> _dataModel;
         TaskCompletionSource<bool> _tcs;
+        // Used to signal when scrolling has completed.
+        // This allows us to prevent any UI refreshes while the user is actively scrolling the list.
+        TaskCompletionSource<bool> _scrollTask;
+
 
         public DifferentialCollectionViewSource(UICollectionView collectionView, string nibName, string cellIdentifier = null)
         {
             _collectionView = collectionView;
             _cellIdentifier = cellIdentifier;
+
+            _scrollTask = new TaskCompletionSource<bool>();
+            _scrollTask.SetResult(true);
         }
 
         public DifferentialDataModel<TKey, TEntity, TCriteria> DataModel
@@ -271,6 +278,21 @@ namespace DifferentialCollections
         {
             if (!collectionView.IndexPathsForVisibleItems.Contains(indexPath)) // sometimes CellDisplayingEnded fires when row was not actually removed... not sure why.
                 _loadingCells.Remove(indexPath.Row);
+        }
+
+        public override void DraggingStarted(UIScrollView scrollView)
+        {
+            _scrollTask = new TaskCompletionSource<bool>();
+        }
+
+        public override void DecelerationEnded(UIScrollView scrollView)
+        {
+            _scrollTask.SetResult(true);
+        }
+
+        public Task WaitForScrollIdle()
+        {
+            return _scrollTask.Task;
         }
     }
 }

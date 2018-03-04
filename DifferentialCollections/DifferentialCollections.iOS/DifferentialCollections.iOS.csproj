@@ -10,12 +10,12 @@
     <RootNamespace>DifferentialCollections.iOS</RootNamespace>
     <AssemblyName>DifferentialCollections.iOS</AssemblyName>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <PackageId>DabbleApps.DifferentialCollections</PackageId>
-    <PackageVersion>0.0.1</PackageVersion>
+    <PackageId>Dabble.DifferentialCollections</PackageId>
+    <PackageVersion>0.0.3</PackageVersion>
     <Authors>Adam Langley</Authors>
     <Owners>Adam Langley</Owners>
     <PackageProjectUrl>https://github.com/Adam-Langley/DifferentialCollections</PackageProjectUrl>
-    <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <PackageReleaseNotes>Added WaitForScrollIdle to data-source to allow UI thread to wait for scrolling to stop before performing view updates.</PackageReleaseNotes>
     <PackageTags>Xamarin iOS UICollectionView</PackageTags>
     <Title>Differential Collections</Title>
     <Description>An iOS tutorial and associated library for keeping an UICollectionView in sync with a dynamic SQL data model.</Description>
