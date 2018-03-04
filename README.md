@@ -28,3 +28,11 @@ The result (see Milestone2 project in the Tutorials folder), is a collection-vie
 6. Avoids any 'janky' visual experience!
 
 ![Final Demo App](/Tutorial/Images/UICollectionViewFinalDemo.gif)
+
+# Demos
+
+| Video                                                     | Explanation |
+| --------------------------------------------------------- | ----------------------------------------------------------------- |
+| ![Deletion Demo](/Tutorial/Images/Demo_RandomDelete.gif)  | Deletion of a random row from SQLite table. <br /> `AppDelegate.Connection.BeginTransaction();` <br /> `var count = _cryptoCoinDataSource.Count;` <br /> `var count = _cryptoCoinDataSource.Count;` <br /> `var random = _cryptoCoinDataSource.GetPage(Random.Next(count - 1), 1).FirstOrDefault();`<br /> `if (null != random)`<br /> `{` <br /> `AppDelegate.Connection.Delete(random);` <br /> `AppDelegate.Connection.Commit();` <br /> `_cryptoCoinDataSource.Requery();<br /> `}` |
+| ![Insertion Demo](/Tutorial/Images/Demo_RandomInsert.gif)  | Insertion of a random row to SQLite table  |
+| ![Move Demo](/Tutorial/Images/Demo_RandomMove.gif)  | Modification of 2 random SQLite table rows to demonstrate them exchanging positions |
