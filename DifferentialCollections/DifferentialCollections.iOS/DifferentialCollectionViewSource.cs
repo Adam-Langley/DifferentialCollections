@@ -31,7 +31,6 @@ namespace DifferentialCollections
         readonly UICollectionView _collectionView;
         readonly string _cellIdentifier;
 
-        VisibleRowManager<TKey> _visibleRows = new VisibleRowManager<TKey>();
         BatchingCache<TEntity> _cache = new BatchingCache<TEntity>(CACHE_SIZE);
         HashSet<int> _loadingCells = new HashSet<int>();
         Func<TEntity, DifferentialDataModel<TKey>.RowVersion> _idGetter;
@@ -81,7 +80,11 @@ namespace DifferentialCollections
 
         protected void OnDataSourceChanged(object sender, DifferentialDataModel<TKey, TEntity, TCriteria>.CriteriaEventArgs e)
         {
-            DispatchQueue.MainQueue.DispatchAsync(() => QueueAction(x => Requery(x, e.Criteria)));
+            DispatchQueue.MainQueue.DispatchAsync(() => QueueAction(x =>
+            {
+                Requery(x, e.Criteria);
+                e.Completed();
+            }));
         }
 
         Task _nextTask;
@@ -126,9 +129,9 @@ namespace DifferentialCollections
             var contentOffset = _collectionView.ContentOffset;
             var rowCountBefore = DataModel.Count;
             var dataModelSnapshot = DataModel.FromCriteria(criteria);
-            //_visibleRows.RemoveStaleRows(_collectionView.IndexPathsForVisibleItems.Select(x => x.Row).Union((_collectionView.IndexPathsForVisibleItems ?? new NSIndexPath[0]).Select(x => x.Row)));
+            //this.DataModel.VisibleRows.RemoveStaleRows(_collectionView.IndexPathsForVisibleItems.Select(x => x.Row).Union((_collectionView.IndexPathsForVisibleItems ?? new NSIndexPath[0]).Select(x => x.Row)));
 
-            var previousRows = _visibleRows;
+            var previousRows = this.DataModel.VisibleRows;
 
             var selectedIds = previousRows.Where(x => _collectionView.IndexPathsForVisibleItems != null && _collectionView.GetIndexPathsForSelectedItems().Any(y => y.Row == x.Position)).Select(x => x.Key).ToList();
             // 1. pull new 'currently visible' id list from database
@@ -263,12 +266,12 @@ namespace DifferentialCollections
 
             var rowMeta = _idGetter(entity);
             rowMeta.Position = rowIndex;
-            _visibleRows.Set(rowMeta);
+            this.DataModel.VisibleRows.Set(rowMeta);
 
             DispatchQueue.MainQueue.DispatchAsync(() =>
             {
                     //cell.TextLabel.Text = null;
-                    OnDataContextLoaded(_visibleRows, cell, rowIndex, entity);
+                OnDataContextLoaded(this.DataModel.VisibleRows, cell, rowIndex, entity);
             });
         }
 

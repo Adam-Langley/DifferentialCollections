@@ -2,26 +2,23 @@
   <MonoDevelop.Ide.ItemProperties.Tutorial.RandomModificationDemo PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.5E5979E4-16E8-4A0B-80A9-6795FEBF1A77" />
   <MonoDevelop.Ide.Workbench ActiveDocument="DifferentialCollections.git Status">
     <Files>
-      <File FileName="Tutorial/Milestone2/ViewController.cs" Line="102" Column="52" />
+      <File FileName="Tutorial/Milestone2/ViewController.cs" Line="70" Column="13" />
       <File FileName="Tutorial/Milestone2/CryptoCoinCollectionViewSource.cs" Line="29" Column="1" />
-      <File FileName="DifferentialCollections/DifferentialCollections.iOS/DifferentialCollectionViewSource.cs" Line="1" Column="1" />
-      <File FileName="Tutorial/Milestone2/DifferentialCollections/ViewInstructions.cs" Line="6" Column="23" />
+      <File FileName="DifferentialCollections/DifferentialCollections.iOS/DifferentialCollectionViewSource.cs" Line="84" Column="14" />
       <File FileName="Tutorial/Milestone1/CryptoCoinTableViewSource.cs" Line="12" Column="28" />
       <File FileName="Tutorial/Milestone1/ViewController.cs" Line="13" Column="11" />
       <File FileName="DifferentialCollections/DifferentialCollections.Core/VisibleRowManagerTransaction.cs" Line="192" Column="81" />
       <File FileName="DifferentialCollections/DifferentialCollections.Core/ViewInstructions.cs" Line="6" Column="22" />
-      <File FileName="Tutorial/Milestone2/DifferentialCollections/VisibleRowManagerTransaction.cs" Line="192" Column="81" />
       <File FileName="Tutorial/Milestone1/ViewController.designer.cs" Line="33" Column="17" />
       <File FileName="Tutorial/Milestone2/Main.cs" Line="15" Column="2" />
       <File FileName="Tutorial/Milestone2/SQLite.cs" Line="2132" Column="1" />
       <File FileName="Tutorial/Milestone2/CryptoCoinDataSource.cs" Line="93" Column="30" />
-      <File FileName="Tutorial/Milestone2/DifferentialCollections/DifferentialDataModel.cs" Line="50" Column="6" />
       <File FileName="Tutorial/RandomModificationDemo/CryptoCoinCell.cs" Line="1" Column="1" />
       <File FileName="Tutorial/RandomModificationDemo/ViewController.cs" Line="1" Column="1" />
-      <File FileName="Tutorial/Milestone2/DifferentialCollections/DifferentialCollectionViewSource.cs" Line="1" Column="1" />
       <File FileName="DifferentialCollections/DifferentialCollections.iOS/packages.config" Line="1" Column="1" />
       <File FileName="Tutorial/RandomModificationDemo/Main.cs" Line="1" Column="1" />
-      <File FileName="DifferentialCollections/DifferentialCollections.Core/DifferentialDataModel.cs" Line="12" Column="6" />
+      <File FileName="DifferentialCollections/DifferentialCollections.Core/DifferentialDataModel.cs" Line="112" Column="26" />
+      <File FileName="Tutorial/Milestone2/Main.storyboard" />
       <File FileName="DifferentialCollections.git Status" />
     </Files>
   </MonoDevelop.Ide.Workbench>
@@ -33,5 +30,6 @@
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.Tutorial.Milestone2 PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.5E5979E4-16E8-4A0B-80A9-6795FEBF1A77" />
   <MonoDevelop.Ide.ItemProperties.Tutorial.Milestone1 PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.5E5979E4-16E8-4A0B-80A9-6795FEBF1A77" />
 </Properties>

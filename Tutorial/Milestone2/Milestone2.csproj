@@ -99,7 +99,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-    <Folder Include="DifferentialCollections\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -128,15 +127,16 @@
     <Compile Include="SQLite.cs" />
     <Compile Include="CryptoCoinDataSource.cs" />
     <Compile Include="CryptoCoinCriteria.cs" />
-    <Compile Include="DifferentialCollections\BatchingCache.cs" />
-    <Compile Include="DifferentialCollections\BatchingCachePage.cs" />
-    <Compile Include="DifferentialCollections\DifferentialCollectionViewSource.cs" />
-    <Compile Include="DifferentialCollections\DifferentialDataModel.cs" />
-    <Compile Include="DifferentialCollections\QueryableExtensions.cs" />
-    <Compile Include="DifferentialCollections\RowVersionDictionary.cs" />
-    <Compile Include="DifferentialCollections\ViewInstructions.cs" />
-    <Compile Include="DifferentialCollections\VisibleRowManager.cs" />
-    <Compile Include="DifferentialCollections\VisibleRowManagerTransaction.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DifferentialCollections\DifferentialCollections.Core\DifferentialCollections.Core.csproj">
+      <Project>{2AD73E43-78FB-45FF-A5F7-679218B4B641}</Project>
+      <Name>DifferentialCollections.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DifferentialCollections\DifferentialCollections.iOS\DifferentialCollections.iOS.csproj">
+      <Project>{1C56636E-59B7-4117-B96E-77947E0C5F99}</Project>
+      <Name>DifferentialCollections.iOS</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

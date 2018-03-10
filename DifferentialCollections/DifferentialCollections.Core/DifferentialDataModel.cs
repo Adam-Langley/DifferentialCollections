@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DifferentialCollections
 {
@@ -53,6 +54,7 @@ namespace DifferentialCollections
         public class CriteriaEventArgs : EventArgs
         {
             public TCriteria Criteria { get; set; }
+            public Action Completed { get; set; }
         }
 
         protected DifferentialDataModel<TIdentifier, TModel, TCriteria> _parent;
@@ -66,6 +68,21 @@ namespace DifferentialCollections
         public abstract IEnumerable<RowVersion> GetRowPositions(IEnumerable<TIdentifier> identifiers);
 
         public abstract IEnumerable<TIdentifier> GetIds(int skip, int take);
+
+        private TaskCompletionSource<bool> _tcs;
+        public Task BusyWaiter
+        {
+            get
+            {
+                return _tcs.Task;
+            }
+        }
+
+        public VisibleRowManager<TIdentifier> VisibleRows
+        {
+            get;
+            private set;
+        } = new VisibleRowManager<TIdentifier>();
 
         private TCriteria _criteria;
         public TCriteria Criteria
@@ -91,6 +108,16 @@ namespace DifferentialCollections
             PlatformRequeryWithCriteria(this, mutator);
         }
 
+        // remove the row from the cache, causing it to be reloaded at next refresh
+        public void Evict(TIdentifier id)
+        {
+            RowVersion rowInfo;
+            if (VisibleRows.TryGetRowForId(id, out rowInfo))
+            {
+                rowInfo.Version = 0;
+            }
+        }
+
         public abstract DifferentialDataModel<TIdentifier, TModel, TCriteria> FromCriteria(TCriteria criteria);
 
         readonly SynchronizationContext _syncContext;
@@ -99,6 +126,7 @@ namespace DifferentialCollections
         {
             _syncContext = SynchronizationContext.Current;
             IdentifierExpression = idExpression;
+            _tcs = new TaskCompletionSource<bool>();
         }
 
         public void OnDataSourceChanged(TCriteria criteria)
@@ -108,9 +136,13 @@ namespace DifferentialCollections
 
             if (null != DataSourceChanged)
             {
+                _tcs = new TaskCompletionSource<bool>();
                 DataSourceChanged.Invoke(this, new CriteriaEventArgs()
                 {
-                    Criteria = criteria
+                    Criteria = criteria,
+                    Completed = () => {
+                        _tcs.TrySetResult(true);
+                    }
                 });
             }
             else
