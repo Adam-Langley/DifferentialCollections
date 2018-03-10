@@ -11,5 +11,13 @@ namespace DifferentialCollections
         public string OrderByColumnName { get; set; }
 
         public bool Descending { get; set; }
+
+        /// <summary>
+        /// Helper method to construct an SQL statement for our current criteria.
+        /// </summary>
+        /// <returns>The to sql.</returns>
+        public string FilterAsSql(){
+            return $"(Name COLLATE NOCASE LIKE '%{FilterString}%')";
+        }
     }
 }
