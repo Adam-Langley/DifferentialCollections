@@ -5,7 +5,7 @@ namespace DifferentialCollections
 {
     public partial class VisibleRowManager<TIdentifier>
     {
-        public class RowVersionDictionary : SortedDictionary<int, DifferentialDataModel<TIdentifier>.RowVersion>
+        public class RowVersionDictionary : SortedDictionary<int, DifferentialDataModel<TIdentifier>.RowMeta>
         {
             public RowVersionDictionary()
             {
@@ -16,7 +16,7 @@ namespace DifferentialCollections
             {
             }
 
-            public DifferentialDataModel<TIdentifier>.RowVersion this[int index]
+            public DifferentialDataModel<TIdentifier>.RowMeta this[int index]
             {
                 get
                 {

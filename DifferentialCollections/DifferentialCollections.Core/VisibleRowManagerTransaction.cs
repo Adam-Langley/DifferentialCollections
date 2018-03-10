@@ -12,7 +12,7 @@ namespace DifferentialCollections
             readonly Dictionary<int, int> _movedRows = new Dictionary<int, int>();
             readonly HashSet<int> _removed = new HashSet<int>();
             readonly List<int> _held = new List<int>();
-            readonly Dictionary<int, DifferentialDataModel<TIdentifier>.RowVersion> _appeared = new Dictionary<int, DifferentialDataModel<TIdentifier>.RowVersion>();
+            readonly Dictionary<int, DifferentialDataModel<TIdentifier>.RowMeta> _appeared = new Dictionary<int, DifferentialDataModel<TIdentifier>.RowMeta>();
 
             readonly int _rowCountBefore;
             readonly int _rowCountAfter;
@@ -26,7 +26,7 @@ namespace DifferentialCollections
                 _retainIds = retainIds;
             }
 
-            public void Appeared(DifferentialDataModel<TIdentifier>.RowVersion row)
+            public void Appeared(DifferentialDataModel<TIdentifier>.RowMeta row)
             {
                 if (_appeared.ContainsKey(row.Position))
                     throw new ArgumentException($"Appeared {row.Position}: Already have row at position.");

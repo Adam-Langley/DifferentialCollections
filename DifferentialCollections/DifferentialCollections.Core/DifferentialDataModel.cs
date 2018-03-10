@@ -34,7 +34,7 @@ namespace DifferentialCollections
             }
         }
 
-        public class RowVersion
+        public class RowMeta
         {
             public TIdentifier Key { get; set; }
             public long Version { get; set; }
@@ -42,7 +42,7 @@ namespace DifferentialCollections
 
             public override string ToString()
             {
-                return string.Format("[RowVersion: Key={0}, Version={1}, Position={2}]", Key, Version, Position);
+                return string.Format("[RowMeta: Key={0}, Version={1}, Position={2}]", Key, Version, Position);
             }
         }
     }
@@ -61,11 +61,11 @@ namespace DifferentialCollections
 
         public event EventHandler<CriteriaEventArgs> DataSourceChanged;
 
-        public Expression<Func<TModel, RowVersion>> IdentifierExpression { get; private set; }
+        public Expression<Func<TModel, RowMeta>> IdentifierExpression { get; private set; }
 
         public abstract IEnumerable<TModel> GetPage(int skip, int take);
 
-        public abstract IEnumerable<RowVersion> GetRowPositions(IEnumerable<TIdentifier> identifiers);
+        public abstract IEnumerable<RowMeta> GetRowMeta(IEnumerable<TIdentifier> identifiers);
 
         public abstract IEnumerable<TIdentifier> GetIds(int skip, int take);
 
@@ -111,7 +111,7 @@ namespace DifferentialCollections
         // remove the row from the cache, causing it to be reloaded at next refresh
         public void Evict(TIdentifier id)
         {
-            RowVersion rowInfo;
+            RowMeta rowInfo;
             if (VisibleRows.TryGetRowForId(id, out rowInfo))
             {
                 rowInfo.Version = 0;
@@ -122,7 +122,7 @@ namespace DifferentialCollections
 
         readonly SynchronizationContext _syncContext;
 
-        public DifferentialDataModel(Expression<Func<TModel, RowVersion>> idExpression)
+        public DifferentialDataModel(Expression<Func<TModel, RowMeta>> idExpression)
         {
             _syncContext = SynchronizationContext.Current;
             IdentifierExpression = idExpression;

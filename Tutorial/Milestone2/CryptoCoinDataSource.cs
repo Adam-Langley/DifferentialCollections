@@ -36,7 +36,7 @@ namespace DifferentialCollections
 
 
         protected CryptoCoinDataSource(DifferentialDataModel<string, CryptoCoin, CryptoCoinCriteria> parent, SQLiteConnection conn, CryptoCoinCriteria criteria)
-            : base(x => new RowVersion { Key = x.Id, Version = x.Version })
+            : base(x => new RowMeta { Key = x.Id, Version = x.Version })
         {
             _parent = parent;
             _conn = conn;
@@ -61,7 +61,7 @@ namespace DifferentialCollections
 
 
 
-        public override IEnumerable<DifferentialDataModel<string>.RowVersion> GetRowPositions(IEnumerable<string> identifiers)
+        public override IEnumerable<DifferentialDataModel<string>.RowMeta> GetRowMeta(IEnumerable<string> identifiers)
         {
             var ids = string.Join(", ", identifiers.Select(x => $"'{x}'").ToArray());
 
@@ -76,13 +76,13 @@ namespace DifferentialCollections
                 + $" WHERE Id IN ({ids}) AND {CriteriaToSql()}"
                 + $"  ORDER BY Position {(Criteria.Descending ? "DESC" : "ASC")}, Id {(Criteria.Descending ? "DESC" : "ASC")}";
 
-            return _conn.Query<RowVersion>(sqlOffset);
+            return _conn.Query<RowMeta>(sqlOffset);
         }
 
         public override IEnumerable<string> GetIds(int skip, int take)
         {
             var sqlIds = $"SELECT Id as Key FROM {nameof(CryptoCoin)} WHERE {CriteriaToSql()} ORDER BY {Criteria.OrderByColumnName} {(Criteria.Descending ? "DESC" : "ASC")}, rowid {(Criteria.Descending ? "DESC" : "ASC")} LIMIT ? OFFSET ?";
-            var idList = _conn.Query<RowVersion>(sqlIds, take, skip).Select(x => x.Key);
+            var idList = _conn.Query<RowMeta>(sqlIds, take, skip).Select(x => x.Key);
             return idList;
         }
 

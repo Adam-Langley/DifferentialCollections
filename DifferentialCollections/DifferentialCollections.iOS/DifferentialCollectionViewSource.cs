@@ -33,7 +33,7 @@ namespace DifferentialCollections
 
         BatchingCache<TEntity> _cache = new BatchingCache<TEntity>(CACHE_SIZE);
         HashSet<int> _loadingCells = new HashSet<int>();
-        Func<TEntity, DifferentialDataModel<TKey>.RowVersion> _idGetter;
+        Func<TEntity, DifferentialDataModel<TKey>.RowMeta> _idGetter;
         DifferentialDataModel<TKey, TEntity, TCriteria> _dataModel;
         TaskCompletionSource<bool> _tcs;
         // Used to signal when scrolling has completed.
@@ -147,7 +147,7 @@ namespace DifferentialCollections
 
             var rowIdsInViewport = dataModelSnapshot.GetIds(newTopRow, (int)maxRowCount);
 
-            var newRows = dataModelSnapshot.GetRowPositions(rowIdsInViewport.Union(previousRows.RowIds).Union(selectedIds)).ToList();
+            var newRows = dataModelSnapshot.GetRowMeta(rowIdsInViewport.Union(previousRows.RowIds).Union(selectedIds)).ToList();
 
             var invalidResults = newRows.GroupBy(x => x.Position).Where(x => x.Count() > 1).Select(x => new { Position = x, Count = x.Count() });
 

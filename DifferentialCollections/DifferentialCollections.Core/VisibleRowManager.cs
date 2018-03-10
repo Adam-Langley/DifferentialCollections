@@ -5,14 +5,14 @@ using System.Linq;
 
 namespace DifferentialCollections
 {
-    public partial class VisibleRowManager<TIdentifier> : IEnumerable<DifferentialDataModel<TIdentifier>.RowVersion>
+    public partial class VisibleRowManager<TIdentifier> : IEnumerable<DifferentialDataModel<TIdentifier>.RowMeta>
     {
         RowVersionDictionary _cache = new RowVersionDictionary();
 
         public bool TryGetIdAtRow(int row, out TIdentifier result)
         {
             //var meta
-            DifferentialDataModel<TIdentifier>.RowVersion meta = null;
+            DifferentialDataModel<TIdentifier>.RowMeta meta = null;
             if (_cache.TryGetValue(row, out meta))
             {
                 result = meta.Key;
@@ -40,7 +40,7 @@ namespace DifferentialCollections
             }
         }
 
-        public void Set(DifferentialDataModel<TIdentifier>.RowVersion rowMeta)
+        public void Set(DifferentialDataModel<TIdentifier>.RowMeta rowMeta)
         {
             if (_cache.ContainsKey(rowMeta.Position) && _cache[rowMeta.Position] != rowMeta)
             {
@@ -80,7 +80,7 @@ namespace DifferentialCollections
             }
         }
 
-        public bool TryGetRowForId(TIdentifier id, out DifferentialDataModel<TIdentifier>.RowVersion result)
+        public bool TryGetRowForId(TIdentifier id, out DifferentialDataModel<TIdentifier>.RowMeta result)
         {
             var cacheList = _cache.ToList();
             var entry = cacheList.SingleOrDefault(x => object.Equals(x.Value.Key, id));
@@ -123,7 +123,7 @@ namespace DifferentialCollections
             return new VisibleRowManagerTransaction(this, rowCountBefore, rowCountAfter, retainIds);
         }
 
-        public IEnumerator<DifferentialDataModel<TIdentifier>.RowVersion> GetEnumerator()
+        public IEnumerator<DifferentialDataModel<TIdentifier>.RowMeta> GetEnumerator()
         {
             return _cache.Values.GetEnumerator();
         }
