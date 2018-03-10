@@ -10,41 +10,27 @@ namespace DifferentialCollections
 {
     public class CryptoCoinDataSource : DifferentialDataModel<string, CryptoCoin, CryptoCoinCriteria>
     {
-        readonly SQLiteConnection _conn;
         readonly UIView _activityView;
-
-        static SQLiteConnection CreateConnection()
-        {
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "test.sqlite");
-            return new SQLiteConnection(path)
-            {
-                Trace = true
-            };
-        }
 
         string CriteriaToSql()
         {
             return $"(Name COLLATE NOCASE LIKE '%{Criteria.FilterString}%')";
         }
 
-        // changes the underlying query, and forces update in one transaction
-
         public override DifferentialDataModel<string, CryptoCoin, CryptoCoinCriteria> FromCriteria(CryptoCoinCriteria criteria)
         {
-            return new CryptoCoinDataSource(this, _conn, criteria);
+            return new CryptoCoinDataSource(this, criteria);
         }
 
-
-        protected CryptoCoinDataSource(DifferentialDataModel<string, CryptoCoin, CryptoCoinCriteria> parent, SQLiteConnection conn, CryptoCoinCriteria criteria)
+        protected CryptoCoinDataSource(DifferentialDataModel<string, CryptoCoin, CryptoCoinCriteria> parent, CryptoCoinCriteria criteria)
             : base(x => new RowMeta { Key = x.Id, Version = x.Version })
         {
             _parent = parent;
-            _conn = conn;
             Criteria = criteria;
         }
 
         public CryptoCoinDataSource(UIView activityView)
-            : this(null, CreateConnection(), new CryptoCoinCriteria()
+            : this(null, new CryptoCoinCriteria()
             {
                 OrderByColumnName = nameof(CryptoCoin.Name),
                 Descending = false
@@ -56,12 +42,12 @@ namespace DifferentialCollections
         public override int GetCount()
         {
             var sql = $"SELECT COUNT(*) FROM {nameof(CryptoCoin)} WHERE {CriteriaToSql()}";
-            return _conn.ExecuteScalar<int>(sql);
+            return AppDelegate.Connection.ExecuteScalar<int>(sql);
         }
 
 
 
-        public override IEnumerable<DifferentialDataModel<string>.RowMeta> GetRowMeta(IEnumerable<string> identifiers)
+        public override IEnumerable<RowMeta> GetRowMeta(IEnumerable<string> identifiers)
         {
             var ids = string.Join(", ", identifiers.Select(x => $"'{x}'").ToArray());
 
@@ -76,14 +62,13 @@ namespace DifferentialCollections
                 + $" WHERE Id IN ({ids}) AND {CriteriaToSql()}"
                 + $"  ORDER BY Position {(Criteria.Descending ? "DESC" : "ASC")}, Id {(Criteria.Descending ? "DESC" : "ASC")}";
 
-            return _conn.Query<RowMeta>(sqlOffset);
+            return AppDelegate.Connection.Query<RowMeta>(sqlOffset);
         }
 
         public override IEnumerable<string> GetIds(int skip, int take)
         {
             var sqlIds = $"SELECT Id as Key FROM {nameof(CryptoCoin)} WHERE {CriteriaToSql()} ORDER BY {Criteria.OrderByColumnName} {(Criteria.Descending ? "DESC" : "ASC")}, rowid {(Criteria.Descending ? "DESC" : "ASC")} LIMIT ? OFFSET ?";
-            var idList = _conn.Query<RowMeta>(sqlIds, take, skip).Select(x => x.Key);
-            return idList;
+            return AppDelegate.Connection.Query<RowMeta>(sqlIds, take, skip).Select(x => x.Key);
         }
 
         public override IEnumerable<CryptoCoin> GetPage(int skip, int take)
@@ -96,8 +81,7 @@ namespace DifferentialCollections
                 });
             });
 
-            var result = _conn.Query<CryptoCoin>($"SELECT * FROM {nameof(CryptoCoin)} WHERE {CriteriaToSql()} ORDER BY {Criteria.OrderByColumnName} {(Criteria.Descending ? "DESC" : "ASC")}, rowid {(Criteria.Descending ? "DESC" : "ASC")} LIMIT ? OFFSET ?", take, skip);
-            return result;
+            return AppDelegate.Connection.Query<CryptoCoin>($"SELECT * FROM {nameof(CryptoCoin)} WHERE {CriteriaToSql()} ORDER BY {Criteria.OrderByColumnName} {(Criteria.Descending ? "DESC" : "ASC")}, rowid {(Criteria.Descending ? "DESC" : "ASC")} LIMIT ? OFFSET ?", take, skip);
         }
     }
 
