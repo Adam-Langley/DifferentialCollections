@@ -62,3 +62,13 @@ _`CryptoCoinCollectionViewSource` in the example._
     * Instantiate your `DifferentialCollectionViewSource`
     * Assign the `DifferentialCollectionViewDataSource` to the `DataModel` property of your `DifferentialCollectionViewSource`
     * Assign the `DifferentialCollectionViewSource` to the `Source` property of your `UICollectionView`
+    
+Any time you change your underlying database, call your `DifferentialCollectionViewDataSource.Requery()` to refresh the collection view.
+If you also want to change the criteria used to populate your view, pass it to the `RequeryWithCriteria`:
+
+```csharp
+_cryptoCoinDataSource.RequeryWithCriteria(x =>
+{
+  x.FilterString = txtSearch.Text;
+});
+```
