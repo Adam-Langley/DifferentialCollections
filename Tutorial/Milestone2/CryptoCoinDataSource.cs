@@ -75,12 +75,14 @@ namespace DifferentialCollections
                 
             // craft sub-select criteria which will count the rows considered to come 'before' 
             // a given row based on current ordering.
-            var subSelectPositionalCriteria = $"((v2.{Criteria.OrderByColumnName} {op} v.{Criteria.OrderByColumnName}) OR (v2.{Criteria.OrderByColumnName} = v.{Criteria.OrderByColumnName} AND v2.rowid {op} v.rowid))";
+            var subSelect = 
+                $"((v2.{Criteria.OrderByColumnName} {op} v.{Criteria.OrderByColumnName}) " +
+                $"OR (v2.{Criteria.OrderByColumnName} = v.{Criteria.OrderByColumnName} AND v2.rowid {op} v.rowid))";
 
             var sql =
                 $"SELECT Id AS Key, Version, " +
                     $"(SELECT COUNT(*) FROM {nameof(CryptoCoin)} v2 " +
-                    $"WHERE ({Criteria.FilterAsSql()}) AND {subSelectPositionalCriteria}) AS Position " +
+                    $"WHERE ({Criteria.FilterAsSql()}) AND {subSelect}) AS Position " +
                 $"FROM {nameof(CryptoCoin)} v " +
                 $"WHERE Id IN ({ids}) AND {Criteria.FilterAsSql()}" +
                 $"ORDER BY Position {order}, Id {order}";
